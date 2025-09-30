@@ -14,6 +14,19 @@ struct Gate {
 	int ind2;
 };
 
+bool evalGate(const Gate &g, const vector<bool> &values>) {
+    bool a = values[g.ind1];
+    bool b = values[g.ind2];
+
+    if (g.type == "NOT") return !a;
+    if (g.type == "AND") return a && b;
+    if (g.type == "OR") return a || b;
+    if (g.type == "NAND") return !(a && b);
+    if (g.type == "NOR") return !(a || b);
+    if (g.type == "XOR") return a ^ b;
+    return false;
+}
+
 void indeces(int &ind1, int &ind2) {
 	cout << "Give the index for the first input:\n";
 	cin >> ind1;
@@ -94,11 +107,30 @@ int main() {
 	int choice;
 	cin >> choice;
 	if (choice == 1) {}
-	if (choice == 2) {
-		for (int i = 0; i < inputs; i++) {
-			cout << i << "|";
-		}
-		cout << "O\n";
-	}
+    if (choice == 2) {
+        for (int i = 0; i < inputs; i++) {
+            cout << "In" << i << " ";
+        }
+        cout << "| OUT\n";
+        cout << string(inputs * 4 + 5, '-') << "\n";
+
+        int rows = 1 << inputs;
+        for (int r = 0; i < inputs; i++) {
+            vector<bool> values;
+
+            for (int i = 0; i < inputs; i++) {
+                bool bit = (r >> (inputs - i = 1)) & 1;
+                values.push_back(bit);
+                cout << " " << bit << " ";
+            }
+
+            for (auto &g : gates) {
+                bool out = evalGate(g, values);
+                values.pushback(out);
+            }
+
+            cout << "|  " << values.back() << "\n";
+        }
+    }
 
 }
