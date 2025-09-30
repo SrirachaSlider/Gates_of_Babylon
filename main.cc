@@ -103,10 +103,52 @@ int main() {
 		else die();
 		//cout << myGate.type << endl;
 	}
+	
+	vector<int> used(inputs + gates.size(), 0);
+    for (int g = 0; g < gates.size(); g++) {
+        used[gates[g].ind1]++;
+        used[gates[g].ind2]++;
+    }
+    for (int i = 0; i < inputs; i++) {
+        if (used[i] != 1) die();
+    }
+    for (int g = 0; g < gates.size() - 1; g++) {
+        int index = inputs + g;
+        if (used[index] != 1) die();
+    }
+
 	cout << "\n1) Print Circuit Block or 2) Print Truth Table\n";
 	int choice;
 	cin >> choice;
-	if (choice == 1) {}
+    if (choice == 1) {
+        for (int i = 0; i < inputs; i++) {
+            cout << "Gate Type: INPUT\n";
+            cout << "   Input Connected to Index: N.C. and N.C.\n";
+
+            cout << "   Output Connected to Index: ";
+            bool found = false;
+            for (int g = 0; g < gates.size(); g++) {
+                if (gates[g].ind1 == i || gates[g].ind2 == i) {
+                    cout << (inputs + g) << "\n";
+                    found = true;
+                    break;
+            }
+        }
+        if (!found) cout << "OUTPUT PIN\n";
+        cout << "   Value: X\n\n";
+    }
+    for (int g = 0; g < gates.size(); g++) {
+        cout << "Gate Type: " << gates[g].type << "\n";
+        cout << "   Input Connected to Index: "
+             << gates[g].ind1 << " and " << gates[g].ind2 << "\n";
+        if (g == gates.size() - 1)
+            cout << "   Output Connected to Index: OUTPUT PIN\n";
+        else
+            cout << "   Output Connected to Index: " << (inputs + g + 1) << "\n";
+        cout << "   Value: X\n\n";
+        }
+    }
+
     if (choice == 2) {
         for (int i = 0; i < inputs; i++) {
             cout << "In" << i << " ";
@@ -115,18 +157,18 @@ int main() {
         cout << string(inputs * 4 + 5, '-') << "\n";
 
         int rows = 1 << inputs;
-        for (int r = 0; i < inputs; i++) {
+        for (int r = 0; r < inputs; r++) {
             vector<bool> values;
 
             for (int i = 0; i < inputs; i++) {
-                bool bit = (r >> (inputs - i = 1)) & 1;
+                bool bit = (r >> (inputs - i - 1)) & 1;
                 values.push_back(bit);
                 cout << " " << bit << " ";
             }
 
             for (auto &g : gates) {
                 bool out = evalGate(g, values);
-                values.pushback(out);
+                values.push_back(out);
             }
 
             cout << "|  " << values.back() << "\n";
