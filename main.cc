@@ -87,18 +87,12 @@ int main() {
     }
 
 	
-    vector<int> used(inputs + gates.size(), 0);
+    vector<vector<int>> outputs(inputs + gates.size());
     for (size_t g = 0; g < gates.size(); g++) {
-        used[gates[g].ind1]++;
-        if (gates[g].type != "NOT") used[gates[g].ind2]++;
+        outputs[gates[g].ind1].push_back(inputs + g);
+        if (gates[g].type != "NOT") outputs[gates[g].ind2].push_back(inputs + g);
     }
-    for (int i = 0; i < inputs; i++) {
-        if (used[i] != 1) die();
-    }
-    for (size_t g = 0; g + 1 < gates.size(); g++) {
-        int index = inputs + g;
-        if (used[index] != 1) die();
-    }
+
 
 	cout << "\n1) Print Circuit Block or 2) Print Truth Table\n";
 	int choice;
@@ -108,27 +102,33 @@ int main() {
             cout << "Gate Type: INPUT\n";
             cout << "   Input Connected to Index: N.C. and N.C.\n";
             cout << "   Output Connected to Index: ";
-            bool found = false;
-            for (size_t g = 0; g < gates.size(); g++) {
-                if (gates[g].ind1 == i || gates[g].ind2 == i) {
-                    cout << (inputs + g) << "\n";
-                    found = true;
-                    break;
+            if (outputs[i].empty()) cout << "OUTPUT PIN";
+            else {
+                for (size_t k = 0; k < outputs[i].size(); k++) {
+                if (k > 0) cout << ", ";
+                    cout << outputs[i][k];
             }
         }
-        if (!found) cout << "OUTPUT PIN\n";
+        cout << "\n";
         cout << "   Value: X\n\n";
     }
+
     for (size_t g = 0; g < gates.size(); g++) {
         cout << "Gate Type: " << gates[g].type << "\n";
         cout << "   Input Connected to Index: " << gates[g].ind1;
         if (gates[g].type != "NOT")
             cout << " and " << gates[g].ind2;
         cout << "\n";
-        if (g == gates.size() - 1)
-            cout << "   Output Connected to Index: OUTPUT PIN\n";
-        else
-            cout << "   Output Connected to Index: " << (inputs + g + 1) << "\n";
+
+        cout << "   Output Connected to Index: ";
+        if (outputs[inputs + g].empty()) cout << "OUTPUT PIN";
+        else {
+            for (size_t k = 0; k < outputs[inputs + g].size(); k++) {
+                if (k > 0) cout << ", ";
+                cout << outputs[inputs + g][k];
+            }
+        }
+        cout << "\n";
         cout << "   Value: X\n\n";
         }
     }
