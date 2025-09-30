@@ -149,30 +149,34 @@ int main() {
         }
     }
 
-    if (choice == 2) {
+ if (choice == 2) {
+        cout << "Input Pins (Numbers), Output Pin (O):\n";
+
         for (int i = 0; i < inputs; i++) {
-            cout << "In" << i << " ";
+            cout << i;
+            cout << "|";
         }
-        cout << "| OUT\n";
-        cout << string(inputs * 4 + 5, '-') << "\n";
+        cout << "O\n";
 
         int rows = 1 << inputs;
-        for (int r = 0; r < rows; r++) {
+
+        for (int r = rows - 1; r >= 0; r--) {
             vector<bool> values;
 
             for (int i = 0; i < inputs; i++) {
                 bool bit = (r >> (inputs - i - 1)) & 1;
                 values.push_back(bit);
-                cout << " " << bit << " ";
             }
 
             for (auto &g : gates) {
                 bool out = evalGate(g, values);
                 values.push_back(out);
             }
-
-            cout << "|  " << values.back() << "\n";
+            for (int i = 0; i <inputs; i++) {
+                cout << values[i] << "|";
+            }
+            cout << values.back() << "\n";
         }
     }
-
 }
+
