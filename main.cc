@@ -60,7 +60,7 @@ int main() {
         if (gate == 0) {
             cout << "Give the index for the input:\n";
             cin >> ind1;
-            if (ind1 < 0 || ind1 >= inputs + gates.size()) die();
+            if (ind1 < 0 || ind1 >= static_cast<int>(inputs + gates.size())) die();
             myGate.ind1 = ind1;
             myGate.ind2 = -1;
             myGate.type = "NOT";
@@ -68,8 +68,8 @@ int main() {
         }
             else if (gate >= 1 && gate <= 5) {
                 indeces(ind1, ind2);
-                if (ind1 < 0 || ind1 >= inputs + gates.size()) die();
-                if (ind2 < 0 || ind2 >= inputs + gates.size()) die();
+                if (ind1 < 0 || ind1 >= static_cast<int>(inputs + gates.size())) die();
+                if (ind2 < 0 || ind2 >= static_cast<int>(inputs + gates.size())) die();
                 myGate.ind1 = ind1;
                 myGate.ind2 = ind2;
                 switch (gate) {
