@@ -14,7 +14,7 @@ struct Gate {
 	int ind2;
 };
 
-bool evalGate(const Gate &g, const vector<bool> &values>) {
+bool evalGate(const Gate &g, const vector<bool> &values) {
     bool a = values[g.ind1];
     bool b = values[g.ind2];
 
@@ -44,7 +44,7 @@ void indeces(int &ind1, int &ind2) {
 int main() {
 	//vector<int> index;
 	int inputs = 0;
-	cout << "Welcome to the Gates of Babylon\nHow many inputs does you logic block have? (1 to 10)\n";
+	cout << "Welcome to the Gates of Babylon!\nHow many inputs does your logic block have? (1 to 10)\n";
 	cin >> inputs;
 	if (inputs < 1 or inputs > 10) die();
 	vector<Gate> gates;
@@ -157,7 +157,7 @@ int main() {
         cout << string(inputs * 4 + 5, '-') << "\n";
 
         int rows = 1 << inputs;
-        for (int r = 0; r < inputs; r++) {
+        for (int r = 0; r < rows; r++) {
             vector<bool> values;
 
             for (int i = 0; i < inputs; i++) {
