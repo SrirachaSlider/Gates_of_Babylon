@@ -16,9 +16,9 @@ struct Gate {
 
 bool evalGate(const Gate &g, const vector<bool> &values) {
     bool a = values[g.ind1];
-    bool b = values[g.ind2];
+  	if (g.type == "NOT") return !a;
+	bool b = values[g.ind2];
 
-    if (g.type == "NOT") return !a;
     if (g.type == "AND") return a && b;
     if (g.type == "OR") return a || b;
     if (g.type == "NAND") return !(a && b);
@@ -51,68 +51,51 @@ int main() {
 	//for (int i = 0; i < inputs; i++) gates.push_back("");
 	int gate = 0;
 	int ind1 = 0, ind2 = 0;
-	while (cin) {
-		cout << "What sort of gate do you want to add?\n0 - NOT, 1 - AND, 2 - OR, 3 - NAND, 4 - NOR, 5 - XOR, 6 - DONE\n";
-		cin >> gate;
-		Gate myGate;
-		if (gate == 0) {
-			indeces(ind1, ind2);
-			myGate.ind1 = ind1;
-			myGate.ind2 = ind2;
-			myGate.type = "NOT";
-			gates.push_back(myGate);
-		}
-		else if (gate == 1) {
-			indeces(ind1, ind2);
-			myGate.ind1 = ind1;
-			myGate.ind2 = ind2;
-			myGate.type = "AND";
-			gates.push_back(myGate);
-		}
-		else if (gate == 2) {
-			indeces(ind1, ind2);
-			myGate.ind1 = ind1;
-			myGate.ind2 = ind2;
-			myGate.type = "OR";
-			gates.push_back(myGate);
-		}
-		else if (gate == 3) {
-			indeces(ind1, ind2);
-			myGate.ind1 = ind1;
-			myGate.ind2 = ind2;
-			myGate.type = "NAND";
-			gates.push_back(myGate);
-		}
-		else if (gate == 4) {
-			indeces(ind1, ind2);
-			myGate.ind1 = ind1;
-			myGate.ind2 = ind2;
-			myGate.type = "NOR";
-			gates.push_back(myGate);
-		}
-		else if (gate == 5) {
-			indeces(ind1, ind2);
-			myGate.ind1 = ind1;
-			myGate.ind2 = ind2;
-			myGate.type = "XOR";
-			gates.push_back(myGate);
-		}
-		else if (gate == 6) {
-			break;
-		}
-		else die();
-		//cout << myGate.type << endl;
-	}
+    while (cin) {
+        cout << "What sort of gate do you want to add?\n0 - NOT, 1 - AND, 2 - OR, 3 - NAND, 4 - NOR, 5 - XOR, 6 - DONE\n";
+        cin >> gate;
+
+        Gate myGate;
+
+        if (gate == 0) {
+            cout << "Give the index for the input:\n";
+            cin >> ind1;
+            if (ind1 < 0 || ind1 >= inputs + gates.size()) die();
+            myGate.ind1 = ind1;
+            myGate.ind2 = -1;
+            myGate.type = "NOT";
+            gates.push_back(myGate);
+        }
+            else if (gate >= 1 && gate <= 5) {
+                indeces(ind1, ind2);
+                if (ind1 < 0 || ind1 >= inputs + gates.size()) die();
+                if (ind2 < 0 || ind2 >= inputs + gates.size()) die();
+                myGate.ind1 = ind1;
+                myGate.ind2 = ind2;
+                switch (gate) {
+                    case 1: myGate.type = "AND"; break;
+                    case 2: myGate.type = "OR"; break;
+                    case 3: myGate.type = "NAND"; break;
+                    case 4: myGate.type = "NOR"; break;
+                    case 5: myGate.type = "XOR"; break;
+            }
+                gates.push_back(myGate);
+        } else if (gate == 6) {
+            break;
+        }
+        else die();
+    }
+
 	
-	vector<int> used(inputs + gates.size(), 0);
-    for (int g = 0; g < gates.size(); g++) {
+    vector<int> used(inputs + gates.size(), 0);
+    for (size_t g = 0; g < gates.size(); g++) {
         used[gates[g].ind1]++;
-        used[gates[g].ind2]++;
+        if (gates[g].type != "NOT") used[gates[g].ind2]++;
     }
     for (int i = 0; i < inputs; i++) {
         if (used[i] != 1) die();
     }
-    for (int g = 0; g < gates.size() - 1; g++) {
+    for (size_t g = 0; g + 1 < gates.size(); g++) {
         int index = inputs + g;
         if (used[index] != 1) die();
     }
@@ -124,10 +107,9 @@ int main() {
         for (int i = 0; i < inputs; i++) {
             cout << "Gate Type: INPUT\n";
             cout << "   Input Connected to Index: N.C. and N.C.\n";
-
             cout << "   Output Connected to Index: ";
             bool found = false;
-            for (int g = 0; g < gates.size(); g++) {
+            for (size_t g = 0; g < gates.size(); g++) {
                 if (gates[g].ind1 == i || gates[g].ind2 == i) {
                     cout << (inputs + g) << "\n";
                     found = true;
@@ -137,10 +119,12 @@ int main() {
         if (!found) cout << "OUTPUT PIN\n";
         cout << "   Value: X\n\n";
     }
-    for (int g = 0; g < gates.size(); g++) {
+    for (size_t g = 0; g < gates.size(); g++) {
         cout << "Gate Type: " << gates[g].type << "\n";
-        cout << "   Input Connected to Index: "
-             << gates[g].ind1 << " and " << gates[g].ind2 << "\n";
+        cout << "   Input Connected to Index: " << gates[g].ind1;
+        if (gates[g].type != "NOT")
+            cout << " and " << gates[g].ind2;
+        cout << "\n";
         if (g == gates.size() - 1)
             cout << "   Output Connected to Index: OUTPUT PIN\n";
         else
@@ -148,6 +132,7 @@ int main() {
         cout << "   Value: X\n\n";
         }
     }
+
 
  if (choice == 2) {
         cout << "Input Pins (Numbers), Output Pin (O):\n";
